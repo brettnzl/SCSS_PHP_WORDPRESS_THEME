@@ -9,9 +9,10 @@
  * @link http://scssphp.github.io/scssphp
  */
 
-
 require_once "scss/scss.inc.php";
-
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 use ScssPhp\ScssPhp\Compiler;
 
 try {
@@ -21,7 +22,7 @@ try {
     if (file_exists($compiled)) {
         $startcompile = false;
         $lastmodified = filemtime($compiled);
-
+        
         // if the compiled file exists - Get the last modified date
         // Now Loop through the SCSS asset Directory recursively and look if any monified date
         // is greater than that one.
@@ -47,10 +48,10 @@ try {
         $compiler->setSourceMap(Compiler::SOURCE_MAP_FILE);
         $compiler->setSourceMapOptions([
             // relative or full url to the above .map file
-            'sourceMapURL' => './my-style.map',
+            'sourceMapURL' => './style.map',
 
             // (optional) relative or full url to the .css file
-            'sourceMapFilename' => 'my-style.css',
+            'sourceMapFilename' => 'style.css',
 
             // partial path (server root) removed (normalized) to create a relative url
             'sourceMapBasepath' => get_stylesheet_directory(),
@@ -62,21 +63,12 @@ try {
         $compiler->setOutputStyle('compressed');
 
         $result = $compiler->compileString('@import "style.scss";');
-
-        file_put_contents(get_stylesheet_directory().'/my-style.map', $result->getSourceMap());
-        file_put_contents(get_stylesheet_directory().'/my-style.css', $result->getCss());
+        
+        file_put_contents(get_stylesheet_directory().'/style.map', $result->getSourceMap());
+        file_put_contents(get_stylesheet_directory().'/style.css', $result->getCss());
     }
 
 } catch (\Exception $e) {
-    echo '';
+    echo $e;
     syslog(LOG_ERR, 'scssphp: Unable to compile content');
 }
-
-
-
-
-
-
-
-
-
